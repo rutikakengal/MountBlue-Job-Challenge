@@ -36,101 +36,6 @@ Sample Output :
 
 3
 
-C++ Solution : 
-#include <bits/stdc++.h>
-
-using namespace std;
-
-string ltrim(const string &);
-string rtrim(const string &);
-vector<string> split(const string &);
-
-/*
- * Complete the 'sockMerchant' function below.
- *
- * The function is expected to return an INTEGER.
- * The function accepts following parameters:
- *  1. INTEGER n
- *  2. INTEGER_ARRAY ar
- */
-
-int sockMerchant(int n, vector<int> ar) {
-
-}
-
-int main()
-{
-    ofstream fout(getenv("OUTPUT_PATH"));
-
-    string n_temp;
-    getline(cin, n_temp);
-
-    int n = stoi(ltrim(rtrim(n_temp)));
-
-    string ar_temp_temp;
-    getline(cin, ar_temp_temp);
-
-    vector<string> ar_temp = split(rtrim(ar_temp_temp));
-
-    vector<int> ar(n);
-
-    for (int i = 0; i < n; i++) {
-        int ar_item = stoi(ar_temp[i]);
-
-        ar[i] = ar_item;
-    }
-
-    int result = sockMerchant(n, ar);
-
-    fout << result << "\n";
-
-    fout.close();
-
-    return 0;
-}
-
-string ltrim(const string &str) {
-    string s(str);
-
-    s.erase(
-        s.begin(),
-        find_if(s.begin(), s.end(), not1(ptr_fun<int, int>(isspace)))
-    );
-
-    return s;
-}
-
-string rtrim(const string &str) {
-    string s(str);
-
-    s.erase(
-        find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(),
-        s.end()
-    );
-
-    return s;
-}
-
-vector<string> split(const string &str) {
-    vector<string> tokens;
-
-    string::size_type start = 0;
-    string::size_type end = 0;
-
-    while ((end = str.find(" ", start)) != string::npos) {
-        tokens.push_back(str.substr(start, end - start));
-
-        start = end + 1;
-    }
-
-    tokens.push_back(str.substr(start));
-
-    return tokens;
-}
-
-
-
-
 C Solution : 
 
 #include <assert.h>
@@ -151,17 +56,19 @@ char** split_string(char*);
 
 int parse_int(char*);
 
-/*
- * Complete the 'sockMerchant' function below.
- *
- * The function is expected to return an INTEGER.
- * The function accepts following parameters:
- *  1. INTEGER n
- *  2. INTEGER_ARRAY ar
- */
-
 int sockMerchant(int n, int ar_count, int* ar) {
+    int count[101] = {0};
+    int pairs = 0;
 
+    for(int i = 0; i < n; i++) {
+        count[ar[i]]++;
+    }
+
+    for(int i = 0; i < 101; i++) {
+        pairs += count[i] / 2;
+    }
+
+    return pairs;
 }
 
 int main()
@@ -176,7 +83,6 @@ int main()
 
     for (int i = 0; i < n; i++) {
         int ar_item = parse_int(*(ar_temp + i));
-
         *(ar + i) = ar_item;
     }
 
@@ -215,83 +121,41 @@ char* readline() {
 
         if (!data) {
             data = '\0';
-
             break;
         }
     }
 
     if (data[data_length - 1] == '\n') {
         data[data_length - 1] = '\0';
-
         data = realloc(data, data_length);
-
-        if (!data) {
-            data = '\0';
-        }
     } else {
         data = realloc(data, data_length + 1);
-
-        if (!data) {
-            data = '\0';
-        } else {
-            data[data_length] = '\0';
-        }
+        data[data_length] = '\0';
     }
 
     return data;
 }
 
 char* ltrim(char* str) {
-    if (!str) {
-        return '\0';
-    }
-
-    if (!*str) {
-        return str;
-    }
-
-    while (*str != '\0' && isspace(*str)) {
-        str++;
-    }
-
+    while (*str && isspace(*str)) str++;
     return str;
 }
 
 char* rtrim(char* str) {
-    if (!str) {
-        return '\0';
-    }
-
-    if (!*str) {
-        return str;
-    }
-
     char* end = str + strlen(str) - 1;
-
-    while (end >= str && isspace(*end)) {
-        end--;
-    }
-
+    while (end >= str && isspace(*end)) end--;
     *(end + 1) = '\0';
-
     return str;
 }
 
 char** split_string(char* str) {
     char** splits = NULL;
     char* token = strtok(str, " ");
-
     int spaces = 0;
 
     while (token) {
         splits = realloc(splits, sizeof(char*) * ++spaces);
-
-        if (!splits) {
-            return splits;
-        }
-
         splits[spaces - 1] = token;
-
         token = strtok(NULL, " ");
     }
 
@@ -301,32 +165,5 @@ char** split_string(char* str) {
 int parse_int(char* str) {
     char* endptr;
     int value = strtol(str, &endptr, 10);
-
-    if (endptr == str || *endptr != '\0') {
-        exit(EXIT_FAILURE);
-    }
-
     return value;
-}
-
-
-
-Chatgpt solution : 
-#include <unordered_map>
-using namespace std;
-
-int sockMerchant(int n, int ar_count, int* ar) {
-    unordered_map<int, int> freq;
-    
-    for(int i = 0; i < n; i++) {
-        freq[ar[i]]++;
-    }
-    
-    int pairs = 0;
-    
-    for(auto it : freq) {
-        pairs += it.second / 2;
-    }
-    
-    return pairs;
 }
